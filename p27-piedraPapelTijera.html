@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Piedra, Papel o Tijera</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 40px;
+            background-color: #f8f8f8;
+        }
+        h1 { color: #333; }
+        button {
+            font-size: 18px;
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+        }
+        button:hover { background-color: #2980b9; }
+        #resultado {
+            font-size: 22px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #elecciones, #puntos {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #555;
+        }
+        #puntos span {
+            font-weight: bold;
+        }
+        #log {
+            margin-top: 25px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<h1>Piedra, Papel o Tijera</h1>
+<p>Elige una opción:</p>
+
+<button id="piedra">🪨 Piedra</button>
+<button id="papel">📄 Papel</button>
+<button id="tijera">✂️ Tijera</button>
+<button id="reiniciar">🔄 Reiniciar</button>
+
+<p id="elecciones"></p>
+<p id="resultado"></p>
+<p id="puntos">Jugador: <span id="pJ">0</span> | Ordenador: <span id="pPC">0</span></p>
+
+<div id="log"><b>📜 Registro de jugadas:</b></div>
+
+<script>
+    $(function() {
+        const opciones = ["piedra", "papel", "tijera"];
+        let puntosJugador = 0;
+        let puntosPc = 0;
+
+        function agregarLog(texto) {
+            const fecha = new Date().toLocaleString();
+            $("#log").prepend(`<div>[${fecha}] ${texto}</div>`);
+        }
+
+        function jugar(eleccionJugador) {
+            const pc = opciones[Math.floor(Math.random() * opciones.length)];
+
+            $("#elecciones").html(`Tú eliges: <b>${eleccionJugador}</b> | Ordenador elige: <b>${pc}</b>`);
+
+            let resultado = "";
+            let color = "";
+
+            if (eleccionJugador === pc) {
+                resultado = "Empate";
+                color = "orange";
+            } else if (
+                (eleccionJugador === "piedra" && pc === "tijera") ||
+                (eleccionJugador === "papel" && pc === "piedra") ||
+                (eleccionJugador === "tijera" && pc === "papel")
+            ) {
+                resultado = "¡Ganaste!";
+                color = "green";
+                puntosJugador++;
+            } else {
+                resultado = "Perdiste :(";
+                color = "red";
+                puntosPc++;
+            }
+
+            $("#resultado").text(resultado).css("color", color);
+            $("#pJ").text(puntosJugador);
+            $("#pPC").text(puntosPc);
+
+            agregarLog(`Jugador: ${eleccionJugador} | PC: ${pc} → ${resultado}`);
+        }
+
+        $("#piedra").click(() => jugar("piedra"));
+        $("#papel").click(() => jugar("papel"));
+        $("#tijera").click(() => jugar("tijera"));
+
+        $("#reiniciar").click(() => {
+            puntosJugador = 0;
+            puntosPc = 0;
+            $("#pJ").text("0");
+            $("#pPC").text("0");
+            $("#resultado").text("");
+            $("#elecciones").text("");
+            $("#log").html("<b>📜 Registro de jugadas:</b>");
+        });
+    });
+</script>
+
+</body>
+</html>
